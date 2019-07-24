@@ -5,7 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 import { Provider } from 'react-redux';
 import { create } from './store';
-import { diagramReducer } from './reducers/diagramReducer';
+import { diagramReducerLegacy } from './reducers/diagramReducerLegacy';
 import go from 'gojs';
 
 const gojsKey = process.env.REACT_APP_GOJS_KEY;
@@ -16,7 +16,7 @@ if (gojsKey) {
 }
 
 ReactDOM.render(
-    <Provider store={create(diagramReducer)}>
+    <Provider store={create(diagramReducerLegacy)}>
         <App />
     </Provider>,
     document.getElementById('root') as HTMLElement
