@@ -1,5 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
-import { NodeModel } from '../reducers/diagramReducer';
+import { NodeModel } from '../reducers/diagramReducerLegacy';
 import { DiagramModel, LinkModel } from 'react-gojs';
 
 const actionCreator = actionCreatorFactory('DIAGRAM');

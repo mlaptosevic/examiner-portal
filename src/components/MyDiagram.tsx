@@ -1,7 +1,7 @@
 import React from 'react';
 import go from 'gojs';
 import { Diagram, ToolManager } from 'gojs';
-import { NodeModel } from '../reducers/diagramReducer';
+import { NodeModel } from '../reducers/diagramReducerLegacy';
 import { DiagramModel, LinkModel, GojsDiagram, ModelChangeEvent } from 'react-gojs';
 import './MyDiagram.css';
 import { UpdateNodeTextEvent } from '../actions/diagram';

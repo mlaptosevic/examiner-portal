@@ -1,5 +1,5 @@
 import React from 'react';
-import { DiagramState, nodeSelectionSelector } from '../reducers/diagramReducer';
+import { DiagramState, nodeSelectionSelector } from '../reducers/diagramReducerLegacy';
 import { connect } from 'react-redux';
 
 interface SelectionDetailsStateProps {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DiagramState, NodeModel } from '../reducers/diagramReducer';
+import { DiagramState, NodeModel } from '../reducers/diagramReducerLegacy';
 import { connect } from 'react-redux';
 import { init, updateNodeColor, addNode } from '../actions/diagram';
 import { Action } from 'typescript-fsa';

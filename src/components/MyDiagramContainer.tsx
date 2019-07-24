@@ -1,6 +1,6 @@
 import React from 'react';
 import MyDiagram from './MyDiagram';
-import { DiagramState, modelSelector, NodeModel } from '../reducers/diagramReducer';
+import { DiagramState, modelSelector, NodeModel } from '../reducers/diagramReducerLegacy';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
