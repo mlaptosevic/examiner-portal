@@ -27,12 +27,18 @@ class AddObjectSnippet extends React.Component<AddObjectSnippetProps, AddObjectS
     };
 
     private onButtonClick = event => {
+        if (this.state.inputText === '') {
+            console.log('ERROR empty field');
+            return;
+        }
+
         if (this.inputRef.current) {
             this.inputRef.current.value = '';
         }
 
         if (this.props.onClick) {
             this.props.onClick(this.state.inputText);
+            this.setState({ inputText: '' });
         }
     };
 
