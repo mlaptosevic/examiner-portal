@@ -2,15 +2,27 @@ import { BaseNodeModel, DiagramModel, LinkModel } from 'react-gojs';
 import * as _ from 'lodash';
 import { Reducer } from 'redux';
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
-import { addNewEdge, AddNewEdgeEvent, addNewField, AddNewFieldEvent, addNewTable } from './diagramActions';
+import {
+    addNewEdge,
+    AddNewEdgeEvent,
+    addNewField,
+    AddNewFieldEvent,
+    addNewTable,
+    setActiveEntity,
+    setFieldModal
+} from './diagramActions';
 
 export interface NodeModel extends BaseNodeModel {
     entity: string;
     fields: Array<string>;
 }
 
+export const NO_ACTIVE_ENTITY = '';
+
 export interface DiagramState {
     model: DiagramModel<NodeModel, LinkModel>;
+    shouldShowFieldModal: boolean;
+    activeEntity: string;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -57,13 +69,31 @@ const addNewEdgeHandler = (state: DiagramState, payload: AddNewEdgeEvent) => {
     };
 };
 
+const setFieldModalHandler = (state: DiagramState, payload: boolean) => {
+    return {
+        ...state,
+        shouldShowFieldModal: payload
+    };
+};
+
+const setActiveEntityHandler = (state: DiagramState, payload: string) => {
+    return {
+        ...state,
+        activeEntity: payload
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
         linkDataArray: []
-    }
+    },
+    shouldShowFieldModal: false,
+    activeEntity: NO_ACTIVE_ENTITY
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
     .case(addNewEdge, addNewEdgeHandler)
+    .case(setFieldModal, setFieldModalHandler)
+    .case(setActiveEntity, setActiveEntityHandler)
     .build();

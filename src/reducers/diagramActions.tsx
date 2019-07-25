@@ -15,3 +15,5 @@ export interface AddNewEdgeEvent {
 export const addNewTable = actionCreator<string>('ADD_NEW_TABLE');
 export const addNewField = actionCreator<AddNewFieldEvent>('ADD_NEW_FIELD');
 export const addNewEdge = actionCreator<AddNewEdgeEvent>('ADD_NEW_EDGE');
+export const setFieldModal = actionCreator<boolean>('SET_FIELD_MODAL');
+export const setActiveEntity = actionCreator<string>('SET_ACTIVE_ENTITY');

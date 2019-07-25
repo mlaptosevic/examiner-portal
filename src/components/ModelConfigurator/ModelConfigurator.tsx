@@ -6,6 +6,7 @@ import { addNewEdge, addNewTable } from '../../reducers/diagramActions';
 import { DiagramModel, LinkModel } from 'react-gojs';
 import AddObjectSnippet from './AddObjectSnippet';
 import EdgeConnection from './EdgeConnection';
+import FieldModal from '../Diagram/FieldModal';
 
 interface ModelConfiguratorProps {
     addNewTable: (entity: string) => void;
@@ -24,6 +25,7 @@ class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
                     onClick={this.props.addNewTable}
                 />
                 <EdgeConnection onClick={this.props.addNewEdge} />
+                <FieldModal />
             </div>
         );
     }

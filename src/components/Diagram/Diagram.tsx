@@ -5,12 +5,14 @@ import './Diagram.css';
 import { DiagramState } from '../../reducers/diagramReducerLegacy';
 import { DiagramModel, LinkModel } from 'react-gojs';
 import { NodeModel } from '../../reducers/diagramReducer';
-import { addNewField } from '../../reducers/diagramActions';
+import { addNewField, setActiveEntity, setFieldModal } from '../../reducers/diagramActions';
 import { Dispatch } from 'redux';
 
 interface DiagramProps {
     model: DiagramModel<NodeModel, LinkModel>;
     addNewField: (entity: string, field: string) => void;
+    setFieldModal: (value: boolean) => void;
+    setActiveEntity: (entity: string) => void;
 }
 
 class Diagram extends React.Component<DiagramProps> {
@@ -26,17 +28,7 @@ class Diagram extends React.Component<DiagramProps> {
     createModel = () => {
         const $ = go.GraphObject.make;
 
-        const model = $(go.GraphLinksModel);
-
-        // model.nodeDataArray = [
-        //     { key: 'Alpha', entity: 'Users', fields: ['id', 'first name', 'age'] },
-        //     { key: 'Beta', entity: 'Shipment' },
-        //     { key: 'Gamma', entity: 'Credit Card' }
-        // ];
-        //
-        // model.linkDataArray = [{ from: 'Alpha', to: 'Beta' }, { from: 'Alpha', to: 'Gamma' }];
-
-        return model;
+        return $(go.GraphLinksModel);
     };
 
     createNodeTemplates = () => {
@@ -75,7 +67,9 @@ class Diagram extends React.Component<DiagramProps> {
                         alignment: go.Spot.Right,
                         click: (e, obj) => {
                             if (obj.part && obj.part.data) {
-                                this.props.addNewField(obj.part.data.key, 'FIELD');
+                                // this.props.addNewField(obj.part.data.key, 'FIELD');
+                                this.props.setActiveEntity(obj.part.data.key);
+                                this.props.setFieldModal(true);
                             }
                         }
                     },
@@ -132,6 +126,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         addNewField: (entity: string, field: string) => {
             dispatch(addNewField({ entity, field }));
+        },
+
+        setFieldModal: (newValue: boolean) => {
+            dispatch(setFieldModal(newValue));
+        },
+
+        setActiveEntity: (activeEntity: string) => {
+            dispatch(setActiveEntity(activeEntity));
         }
     };
 };
