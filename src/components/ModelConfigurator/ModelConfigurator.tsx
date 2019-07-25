@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import { DiagramState, NodeModel } from '../../reducers/diagramReducer';
 import { addNewTable } from '../../reducers/diagramActions';
 import { DiagramModel, LinkModel } from 'react-gojs';
+import AddObjectSnippet from './AddObjectSnippet';
 
 interface ModelConfiguratorProps {
     addNewTableHandler: (tableName: string) => void;
@@ -12,12 +13,14 @@ interface ModelConfiguratorProps {
 
 class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
     render() {
-        const tableNames = this.props.model.nodeDataArray.map(node => node.tableName);
-
         return (
             <div>
-                <button onClick={() => this.props.addNewTableHandler('test')}>Add table</button>
-                <div>{tableNames}</div>
+                <AddObjectSnippet
+                    header="Add new Entity"
+                    defaultButtonText="Add Entity"
+                    defaultInputText="Entity name"
+                    onClick={this.props.addNewTableHandler}
+                />
             </div>
         );
     }
