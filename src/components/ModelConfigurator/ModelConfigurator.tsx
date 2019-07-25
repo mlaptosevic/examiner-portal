@@ -2,12 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { DiagramState, NodeModel } from '../../reducers/diagramReducer';
-import { addNewTable } from '../../reducers/diagramActions';
+import { addNewEdge, addNewTable } from '../../reducers/diagramActions';
 import { DiagramModel, LinkModel } from 'react-gojs';
 import AddObjectSnippet from './AddObjectSnippet';
+import EdgeConnection from './EdgeConnection';
 
 interface ModelConfiguratorProps {
-    addNewTableHandler: (tableName: string) => void;
+    addNewTable: (entity: string) => void;
+    addNewEdge: (from: string, to: string) => void;
     model: DiagramModel<NodeModel, LinkModel>;
 }
 
@@ -19,8 +21,9 @@ class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
                     header="Add new Entity"
                     defaultButtonText="Add Entity"
                     defaultInputText="Entity name"
-                    onClick={this.props.addNewTableHandler}
+                    onClick={this.props.addNewTable}
                 />
+                <EdgeConnection onClick={this.props.addNewEdge} />
             </div>
         );
     }
@@ -28,8 +31,11 @@ class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        addNewTableHandler: (tableName: string) => {
-            dispatch(addNewTable(tableName));
+        addNewTable: (entity: string) => {
+            dispatch(addNewTable(entity));
+        },
+        addNewEdge: (from: string, to: string) => {
+            dispatch(addNewEdge({ from, to }));
         }
     };
 };
