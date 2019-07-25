@@ -1,5 +1,6 @@
 #diagram-container {
-    height: 800px;
-    width: 800px;
+    height: 700px;
+    width: 700px;
     border: 1px solid black;
+    background-color: white;
 }
