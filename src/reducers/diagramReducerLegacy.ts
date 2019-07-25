@@ -146,7 +146,7 @@ const nodeDeselectedHandler = (state: DiagramState, payload: string): DiagramSta
     };
 };
 
-export const diagramReducerLegacy: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
+export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [{ key: 'Root', color: 'lightblue', label: 'Root' }],
         linkDataArray: []
