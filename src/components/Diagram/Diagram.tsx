@@ -5,9 +5,12 @@ import './Diagram.css';
 import { DiagramState } from '../../reducers/diagramReducerLegacy';
 import { DiagramModel, LinkModel } from 'react-gojs';
 import { NodeModel } from '../../reducers/diagramReducer';
+import { addNewField } from '../../reducers/diagramActions';
+import { Dispatch } from 'redux';
 
 interface DiagramProps {
     model: DiagramModel<NodeModel, LinkModel>;
+    addNewField: (entity: string, field: string) => void;
 }
 
 class Diagram extends React.Component<DiagramProps> {
@@ -26,9 +29,9 @@ class Diagram extends React.Component<DiagramProps> {
         const model = $(go.GraphLinksModel);
 
         // model.nodeDataArray = [
-        //     { key: 'Alpha', tableName: 'Users', fields: ['id', 'first name', 'age'] },
-        //     { key: 'Beta', tableName: 'Shipment' },
-        //     { key: 'Gamma', tableName: 'Credit Card' }
+        //     { key: 'Alpha', entity: 'Users', fields: ['id', 'first name', 'age'] },
+        //     { key: 'Beta', entity: 'Shipment' },
+        //     { key: 'Gamma', entity: 'Credit Card' }
         // ];
         //
         // model.linkDataArray = [{ from: 'Alpha', to: 'Beta' }, { from: 'Alpha', to: 'Gamma' }];
@@ -36,7 +39,7 @@ class Diagram extends React.Component<DiagramProps> {
         return model;
     };
 
-    createTemplates = () => {
+    createNodeTemplates = () => {
         const $ = go.GraphObject.make;
 
         return $(
@@ -49,7 +52,7 @@ class Diagram extends React.Component<DiagramProps> {
             $(
                 go.Panel,
                 'Vertical',
-                $(go.TextBlock, { margin: 5 }, new go.Binding('text', 'tableName')),
+                $(go.TextBlock, { margin: 5, width: 130 }, new go.Binding('text', 'entity')),
                 $(
                     go.Panel,
                     'Vertical',
@@ -61,9 +64,22 @@ class Diagram extends React.Component<DiagramProps> {
                             'Auto',
                             { margin: 2 },
                             $(go.Shape, 'RoundedRectangle', { fill: '#91E3E0' }),
-                            $(go.TextBlock, new go.Binding('text', ''), { margin: 2 })
+                            $(go.TextBlock, new go.Binding('text', ''), { margin: 2, editable: true })
                         )
                     }
+                ),
+                $(
+                    'Button',
+                    {
+                        margin: 2,
+                        alignment: go.Spot.Right,
+                        click: (e, obj) => {
+                            if (obj.part && obj.part.data) {
+                                this.props.addNewField(obj.part.data.key, 'FIELD');
+                            }
+                        }
+                    },
+                    $(go.TextBlock, '+')
                 )
             )
         );
@@ -77,13 +93,20 @@ class Diagram extends React.Component<DiagramProps> {
 
     componentDidMount(): void {
         this.diagram = this.createDiagram();
-        const model = this.createModel();
-        const templates = this.createTemplates();
 
-        this.diagram.model = model;
-        this.diagram.nodeTemplate = templates;
+        this.diagram.model = this.createModel();
+
+        this.diagram.nodeTemplate = this.createNodeTemplates();
+
+        this.diagram.linkTemplate = this.createLinkTemplates();
 
         this.isInitializationCompleted = true;
+    }
+
+    private createLinkTemplates() {
+        const $ = go.GraphObject.make;
+
+        return $(go.Link, $(go.Shape));
     }
 
     render() {
@@ -105,4 +128,15 @@ const mapStateToProps = (state: DiagramState) => {
     };
 };
 
-export default connect(mapStateToProps)(Diagram);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        addNewField: (entity: string, field: string) => {
+            dispatch(addNewField({ entity, field }));
+        }
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Diagram);
