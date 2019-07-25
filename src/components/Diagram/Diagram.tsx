@@ -1,10 +1,20 @@
 import React from 'react';
-// import {GojsDiagram} from "react-gojs";
-import go from 'gojs';
+import { connect } from 'react-redux';
+import go, { Diagram as DiagramGojs } from 'gojs';
 import './Diagram.css';
+import { DiagramState } from '../../reducers/diagramReducerLegacy';
+import { DiagramModel, LinkModel } from 'react-gojs';
+import { NodeModel } from '../../reducers/diagramReducer';
 
-class Diagram extends React.Component {
+interface DiagramProps {
+    model: DiagramModel<NodeModel, LinkModel>;
+}
+
+class Diagram extends React.Component<DiagramProps> {
     private static DIAGRAM_CONTAINER = 'diagram-container';
+
+    private isInitializationCompleted = false;
+    private diagram: DiagramGojs = {} as DiagramGojs;
 
     constructor(props) {
         super(props);
@@ -15,13 +25,13 @@ class Diagram extends React.Component {
 
         const model = $(go.GraphLinksModel);
 
-        model.nodeDataArray = [
-            { key: 'Alpha', tableName: 'Users', fields: ['id', 'first name', 'age'] },
-            { key: 'Beta', tableName: 'Shipment' },
-            { key: 'Gamma', tableName: 'Credit Card' }
-        ];
-
-        model.linkDataArray = [{ from: 'Alpha', to: 'Beta' }, { from: 'Alpha', to: 'Gamma' }];
+        // model.nodeDataArray = [
+        //     { key: 'Alpha', tableName: 'Users', fields: ['id', 'first name', 'age'] },
+        //     { key: 'Beta', tableName: 'Shipment' },
+        //     { key: 'Gamma', tableName: 'Credit Card' }
+        // ];
+        //
+        // model.linkDataArray = [{ from: 'Alpha', to: 'Beta' }, { from: 'Alpha', to: 'Gamma' }];
 
         return model;
     };
@@ -66,17 +76,33 @@ class Diagram extends React.Component {
     };
 
     componentDidMount(): void {
-        const diagram = this.createDiagram();
+        this.diagram = this.createDiagram();
         const model = this.createModel();
         const templates = this.createTemplates();
 
-        diagram.model = model;
-        diagram.nodeTemplate = templates;
+        this.diagram.model = model;
+        this.diagram.nodeTemplate = templates;
+
+        this.isInitializationCompleted = true;
     }
 
     render() {
+        if (this.isInitializationCompleted) {
+            const model = this.createModel();
+            model.nodeDataArray = this.props.model.nodeDataArray;
+            model.linkDataArray = this.props.model.linkDataArray;
+
+            this.diagram.model = model;
+        }
+
         return <div id={Diagram.DIAGRAM_CONTAINER}></div>;
     }
 }
 
-export default Diagram;
+const mapStateToProps = (state: DiagramState) => {
+    return {
+        model: state.model
+    };
+};
+
+export default connect(mapStateToProps)(Diagram);
