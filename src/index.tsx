@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { create } from './store';
 import { diagramReducer } from './reducers/diagramReducer';
 import go from 'gojs';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const gojsKey = process.env.REACT_APP_GOJS_KEY;
 
