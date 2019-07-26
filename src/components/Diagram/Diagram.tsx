@@ -7,6 +7,7 @@ import { DiagramModel, LinkModel } from 'react-gojs';
 import { NodeModel } from '../../reducers/diagramReducer';
 import { addNewField, setActiveEntity, setFieldModal } from '../../reducers/diagramActions';
 import { Dispatch } from 'redux';
+import { createLinkTemplates, createNodeTemplates } from './DiagramTemplates';
 
 interface DiagramProps {
     model: DiagramModel<NodeModel, LinkModel>;
@@ -31,54 +32,6 @@ class Diagram extends React.Component<DiagramProps> {
         return $(go.GraphLinksModel);
     };
 
-    createNodeTemplates = () => {
-        const $ = go.GraphObject.make;
-
-        return $(
-            go.Node,
-            'Auto',
-            $(go.Shape, {
-                figure: 'RoundedRectangle',
-                fill: 'lightgrey'
-            }),
-            $(
-                go.Panel,
-                'Vertical',
-                $(go.TextBlock, { margin: 5, width: 130 }, new go.Binding('text', 'entity')),
-                $(
-                    go.Panel,
-                    'Vertical',
-
-                    new go.Binding('itemArray', 'fields'),
-                    {
-                        itemTemplate: $(
-                            go.Panel,
-                            'Auto',
-                            { margin: 2 },
-                            $(go.Shape, 'RoundedRectangle', { fill: '#91E3E0' }),
-                            $(go.TextBlock, new go.Binding('text', ''), { margin: 2, editable: true })
-                        )
-                    }
-                ),
-                $(
-                    'Button',
-                    {
-                        margin: 2,
-                        alignment: go.Spot.Right,
-                        click: (e, obj) => {
-                            if (obj.part && obj.part.data) {
-                                // this.props.addNewField(obj.part.data.key, 'FIELD');
-                                this.props.setActiveEntity(obj.part.data.key);
-                                this.props.setFieldModal(true);
-                            }
-                        }
-                    },
-                    $(go.TextBlock, '+')
-                )
-            )
-        );
-    };
-
     createDiagram = () => {
         const $ = go.GraphObject.make;
 
@@ -90,17 +43,11 @@ class Diagram extends React.Component<DiagramProps> {
 
         this.diagram.model = this.createModel();
 
-        this.diagram.nodeTemplate = this.createNodeTemplates();
+        this.diagram.nodeTemplate = createNodeTemplates(this.props.setActiveEntity, this.props.setFieldModal);
 
-        this.diagram.linkTemplate = this.createLinkTemplates();
+        this.diagram.linkTemplate = createLinkTemplates();
 
         this.isInitializationCompleted = true;
-    }
-
-    private createLinkTemplates() {
-        const $ = go.GraphObject.make;
-
-        return $(go.Link, $(go.Shape));
     }
 
     render() {
