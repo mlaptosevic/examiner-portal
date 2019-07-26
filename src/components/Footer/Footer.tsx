@@ -7,7 +7,7 @@ const Footer = props => {
             <Row>
                 <p className="title">ER Model Examiner</p>
             </Row>
-            <Row>Questions at mail: mlaptosevic@gmail.com</Row>
+            <Row>Project is still in development phase, thank you for testing</Row>
         </Container>
     );
 };
