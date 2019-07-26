@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React, { RefObject } from 'react';
+import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { DiagramState, NO_ACTIVE_ENTITY } from '../../reducers/diagramReducer';
 import { Dispatch } from 'redux';
 import { addNewField, setActiveEntity, setFieldModal } from '../../reducers/diagramActions';
@@ -35,13 +35,19 @@ class FieldModal extends React.Component<FieldModalProps> {
 
     render() {
         return (
-            <Modal show={this.props.show}>
+            <Modal show={this.props.show} onHide={() => this.close(null)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add field to entity: {this.props.activeEntity}</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <input ref={this.fieldNameRef} placeholder="Field name" />
+                    <InputGroup>
+                        <FormControl
+                            ref={this.fieldNameRef as RefObject<any>}
+                            placeholder="Field name"
+                            aria-label="Field name"
+                        />
+                    </InputGroup>
                 </Modal.Body>
 
                 <Modal.Footer>
