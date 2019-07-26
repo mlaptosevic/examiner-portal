@@ -1,32 +1,73 @@
 import React, { RefObject } from 'react';
 import './AddObjectSnippet.css';
-import { Button, FormControl, InputGroup } from 'react-bootstrap';
+import { Alert, Button, FormControl, InputGroup } from 'react-bootstrap';
+import { DiagramState, NodeModel } from '../../reducers/diagramReducer';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
 interface AddObjectSnippetProps {
     header?: string;
     onClick?: (event) => void;
     defaultButtonText?: string;
     defaultInputText?: string;
+    nodes: Array<NodeModel>;
 }
 
-class AddObjectSnippet extends React.Component<AddObjectSnippetProps> {
+interface AddObjectSnippetState {
+    showError: boolean;
+    errorMessage: string;
+}
+
+class AddObjectSnippet extends React.Component<AddObjectSnippetProps, AddObjectSnippetState> {
     constructor(props) {
         super(props);
+
+        this.state = {
+            showError: false,
+            errorMessage: 'Error'
+        };
     }
 
     private inputRef = React.createRef<HTMLInputElement>();
 
     private onButtonClick = event => {
-        if (this.inputRef.current && this.inputRef.current.value === '') {
-            console.log('ERROR empty field');
+        if (!this.inputRef.current) {
             return;
         }
 
-        if (this.inputRef.current && this.props.onClick) {
-            const tmpInputText = this.inputRef.current.value;
-            this.inputRef.current.value = '';
-            this.props.onClick(tmpInputText);
+        const entity = this.inputRef.current.value;
+
+        if (entity === '' || entity === ' ') {
+            this.setState({
+                showError: true,
+                errorMessage: 'Empty string is not valid entity name'
+            });
+            return;
         }
+
+        if (!this.checkIsEntityNameUnique(entity)) {
+            this.setState({
+                showError: true,
+                errorMessage: `Entity ${entity} already exists`
+            });
+            return;
+        }
+
+        if (this.props.onClick) {
+            this.setToDefaultState();
+            this.props.onClick(entity);
+        }
+    };
+
+    private checkIsEntityNameUnique = (entity: string) => {
+        return this.props.nodes.filter(node => node.key === entity).length === 0;
+    };
+
+    private setToDefaultState = () => {
+        if (this.inputRef.current) {
+            this.inputRef.current.value = '';
+        }
+        this.setState({ showError: false });
     };
 
     render() {
@@ -35,6 +76,14 @@ class AddObjectSnippet extends React.Component<AddObjectSnippetProps> {
         return (
             <div className="add-object-snippet">
                 {header}
+                <Alert
+                    show={this.state.showError}
+                    variant="danger"
+                    onClose={() => this.setState({ showError: false })}
+                    dismissible
+                >
+                    {this.state.errorMessage}
+                </Alert>
                 <InputGroup>
                     <FormControl
                         ref={this.inputRef as RefObject<any>}
@@ -52,4 +101,17 @@ class AddObjectSnippet extends React.Component<AddObjectSnippetProps> {
     }
 }
 
-export default AddObjectSnippet;
+const mapStateToProps = (state: DiagramState) => {
+    return {
+        nodes: state.model.nodeDataArray
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {};
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AddObjectSnippet);
