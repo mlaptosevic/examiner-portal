@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { RefObject } from 'react';
+import './AddObjectSnippet.css';
+import { Button, FormControl, InputGroup } from 'react-bootstrap';
 
 interface AddObjectSnippetProps {
     header?: string;
@@ -7,49 +9,44 @@ interface AddObjectSnippetProps {
     defaultInputText?: string;
 }
 
-interface AddObjectSnippetState {
-    inputText: string;
-}
-
-class AddObjectSnippet extends React.Component<AddObjectSnippetProps, AddObjectSnippetState> {
+class AddObjectSnippet extends React.Component<AddObjectSnippetProps> {
     constructor(props) {
         super(props);
-
-        this.state = {
-            inputText: ''
-        };
     }
 
     private inputRef = React.createRef<HTMLInputElement>();
 
-    private onInputChange = event => {
-        this.setState({ inputText: event.target.value });
-    };
-
     private onButtonClick = event => {
-        if (this.state.inputText === '') {
+        if (this.inputRef.current && this.inputRef.current.value === '') {
             console.log('ERROR empty field');
             return;
         }
 
-        if (this.inputRef.current) {
+        if (this.inputRef.current && this.props.onClick) {
+            const tmpInputText = this.inputRef.current.value;
             this.inputRef.current.value = '';
-        }
-
-        if (this.props.onClick) {
-            this.props.onClick(this.state.inputText);
-            this.setState({ inputText: '' });
+            this.props.onClick(tmpInputText);
         }
     };
 
     render() {
-        const header = this.props.header ? <div>{this.props.header}</div> : null;
+        const header = this.props.header ? <div className="title">{this.props.header}</div> : null;
 
         return (
-            <div>
+            <div className="add-object-snippet">
                 {header}
-                <input onChange={this.onInputChange} ref={this.inputRef} placeholder={this.props.defaultInputText} />
-                <button onClick={this.onButtonClick}>{this.props.defaultButtonText}</button>
+                <InputGroup>
+                    <FormControl
+                        ref={this.inputRef as RefObject<any>}
+                        placeholder={this.props.defaultInputText}
+                        aria-label={this.props.defaultInputText}
+                    />
+                    <InputGroup.Append>
+                        <Button variant="success" onClick={this.onButtonClick}>
+                            {this.props.defaultButtonText}
+                        </Button>
+                    </InputGroup.Append>
+                </InputGroup>
             </div>
         );
     }

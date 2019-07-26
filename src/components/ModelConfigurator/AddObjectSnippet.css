@@ -1,0 +1,10 @@
+.add-object-snippet {
+    padding: 15px;
+    border-bottom: 1px solid black;
+    margin: 15px 0;
+}
+
+.add-object-snippet .title {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+}

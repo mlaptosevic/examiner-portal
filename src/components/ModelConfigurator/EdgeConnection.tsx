@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { RefObject } from 'react';
+import { Button, FormControl, InputGroup } from 'react-bootstrap';
+import './EdgeConnection.css';
 
 interface EdgeConnectionProps {
     onClick: (from: string, to: string) => void;
@@ -28,10 +30,21 @@ class EdgeConnection extends React.Component<EdgeConnectionProps> {
 
     render() {
         return (
-            <div>
-                <input ref={this.fromRef} placeholder="FROM ENTITY" />
-                <input ref={this.toRef} placeholder="TO ENTITY" />
-                <button onClick={this.onConnectClick}>Connect</button>
+            <div className="edge-connection">
+                <div className="title"> Connection between entities </div>
+                <InputGroup>
+                    <FormControl
+                        ref={this.fromRef as RefObject<any>}
+                        placeholder="From entity"
+                        aria-label="From entity"
+                    />
+                    <FormControl ref={this.toRef as RefObject<any>} placeholder="To entity" aria-label="To entity" />
+                    <InputGroup.Append>
+                        <Button variant="success" onClick={this.onConnectClick}>
+                            Connect
+                        </Button>
+                    </InputGroup.Append>
+                </InputGroup>
             </div>
         );
     }
