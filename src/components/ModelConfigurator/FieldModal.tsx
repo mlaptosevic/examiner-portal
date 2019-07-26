@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import { Alert, Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { DiagramState, NO_ACTIVE_ENTITY } from '../../reducers/diagramReducer';
 import { Dispatch } from 'redux';
 import { addNewField, setActiveEntity, setFieldModal } from '../../reducers/diagramActions';
@@ -13,13 +13,47 @@ interface FieldModalProps {
     activeEntity: string;
 }
 
-class FieldModal extends React.Component<FieldModalProps> {
+interface FieldModalState {
+    showError: boolean;
+    errorMessage: string;
+}
+
+class FieldModal extends React.Component<FieldModalProps, FieldModalState> {
     private fieldNameRef = React.createRef<HTMLInputElement>();
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showError: false,
+            errorMessage: 'Error'
+        };
+    }
+
     private save = event => {
-        if (this.fieldNameRef.current && this.props.activeEntity !== NO_ACTIVE_ENTITY) {
-            this.props.addNewField(this.props.activeEntity, this.fieldNameRef.current.value);
+        if (!this.fieldNameRef.current) {
+            return;
         }
+
+        if (this.fieldNameRef.current.value === '' || this.fieldNameRef.current.value === ' ') {
+            this.setState({
+                showError: true,
+                errorMessage: 'Empty string is not valid field name'
+            });
+
+            return;
+        }
+
+        if (this.props.activeEntity === NO_ACTIVE_ENTITY) {
+            this.setState({
+                showError: true,
+                errorMessage: 'No entity is selected'
+            });
+
+            return;
+        }
+
+        this.props.addNewField(this.props.activeEntity, this.fieldNameRef.current.value);
 
         this.close(null);
     };
@@ -41,6 +75,14 @@ class FieldModal extends React.Component<FieldModalProps> {
                 </Modal.Header>
 
                 <Modal.Body>
+                    <Alert
+                        show={this.state.showError}
+                        variant="danger"
+                        onClose={() => this.setState({ showError: false })}
+                        dismissible
+                    >
+                        {this.state.errorMessage}
+                    </Alert>
                     <InputGroup>
                         <FormControl
                             ref={this.fieldNameRef as RefObject<any>}
