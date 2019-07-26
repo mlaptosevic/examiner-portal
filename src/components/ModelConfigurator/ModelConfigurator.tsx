@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { DiagramState, NodeModel } from '../../reducers/diagramReducer';
-import { addNewEdge, addNewTable } from '../../reducers/diagramActions';
+import { addNewTable } from '../../reducers/diagramActions';
 import { DiagramModel, LinkModel } from 'react-gojs';
 import AddObjectSnippet from './AddObjectSnippet';
 import EdgeConnection from './EdgeConnection';
@@ -10,7 +10,6 @@ import FieldModal from './FieldModal';
 
 interface ModelConfiguratorProps {
     addNewTable: (entity: string) => void;
-    addNewEdge: (from: string, to: string) => void;
     model: DiagramModel<NodeModel, LinkModel>;
 }
 
@@ -24,7 +23,7 @@ class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
                     defaultInputText="Entity name"
                     onClick={this.props.addNewTable}
                 />
-                <EdgeConnection onClick={this.props.addNewEdge} />
+                <EdgeConnection />
                 <FieldModal />
             </div>
         );
@@ -35,9 +34,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         addNewTable: (entity: string) => {
             dispatch(addNewTable(entity));
-        },
-        addNewEdge: (from: string, to: string) => {
-            dispatch(addNewEdge({ from, to }));
         }
     };
 };
