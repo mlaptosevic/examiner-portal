@@ -18,9 +18,15 @@ export enum WorkMode {
     FINISHED
 }
 
+export interface Question {
+    id: number;
+    text: string;
+}
+
 export const addNewTable = actionCreator<string>('ADD_NEW_TABLE');
 export const addNewField = actionCreator<AddNewFieldEvent>('ADD_NEW_FIELD');
 export const addNewEdge = actionCreator<AddNewEdgeEvent>('ADD_NEW_EDGE');
 export const setFieldModal = actionCreator<boolean>('SET_FIELD_MODAL');
 export const setActiveEntity = actionCreator<string>('SET_ACTIVE_ENTITY');
 export const setWorkMode = actionCreator<WorkMode>('SET_WORK_MODE');
+export const addQuestion = actionCreator<Question>('ADD_QUESTION');

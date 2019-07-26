@@ -8,6 +8,8 @@ import {
     addNewField,
     AddNewFieldEvent,
     addNewTable,
+    addQuestion,
+    Question,
     setActiveEntity,
     setFieldModal,
     setWorkMode,
@@ -26,6 +28,7 @@ export interface DiagramState {
     shouldShowFieldModal: boolean;
     activeEntity: string;
     workMode: WorkMode;
+    questions: Array<Question>;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -93,6 +96,17 @@ const setWorkModeHandler = (state: DiagramState, payload: WorkMode) => {
     };
 };
 
+const addQuestionHandler = (state: DiagramState, payload: Question) => {
+    const newQuestions = _.cloneDeep(state.questions);
+
+    newQuestions.push(payload);
+
+    return {
+        ...state,
+        questions: newQuestions
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
@@ -100,7 +114,8 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     },
     shouldShowFieldModal: false,
     activeEntity: NO_ACTIVE_ENTITY,
-    workMode: WorkMode.WORKING
+    workMode: WorkMode.WORKING,
+    questions: []
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -108,4 +123,5 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(setFieldModal, setFieldModalHandler)
     .case(setActiveEntity, setActiveEntityHandler)
     .case(setWorkMode, setWorkModeHandler)
+    .case(addQuestion, addQuestionHandler)
     .build();
