@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import { Alert, Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
-import { DiagramState, NO_ACTIVE_ENTITY } from '../../reducers/diagramReducer';
+import { DiagramState, NO_ACTIVE_ENTITY, NodeModel } from '../../reducers/diagramReducer';
 import { Dispatch } from 'redux';
 import { addNewField, setActiveEntity, setFieldModal } from '../../reducers/diagramActions';
 import { connect } from 'react-redux';
@@ -11,6 +11,7 @@ interface FieldModalProps {
     setActiveEntity: (entity: string) => void;
     show: boolean;
     activeEntity: string;
+    nodes: Array<NodeModel>;
 }
 
 interface FieldModalState {
@@ -30,12 +31,29 @@ class FieldModal extends React.Component<FieldModalProps, FieldModalState> {
         };
     }
 
+    private checkIsFieldNameUnique = (entity: string, fieldName: string): boolean => {
+        const filteredNodes = this.props.nodes.filter(node => node.key === entity);
+
+        if (filteredNodes.length === 0) {
+            console.log(`Entity: ${entity} doesn't exist`);
+            return false;
+        }
+
+        if (filteredNodes.length !== 1) {
+            console.warn(`Entity: ${entity} have multiply instances in model`);
+        }
+
+        return filteredNodes[0].fields.filter(field => field === fieldName).length === 0;
+    };
+
     private save = event => {
         if (!this.fieldNameRef.current) {
             return;
         }
 
-        if (this.fieldNameRef.current.value === '' || this.fieldNameRef.current.value === ' ') {
+        let field = this.fieldNameRef.current.value;
+
+        if (field === '' || field === ' ') {
             this.setState({
                 showError: true,
                 errorMessage: 'Empty string is not valid field name'
@@ -53,7 +71,16 @@ class FieldModal extends React.Component<FieldModalProps, FieldModalState> {
             return;
         }
 
-        this.props.addNewField(this.props.activeEntity, this.fieldNameRef.current.value);
+        if (!this.checkIsFieldNameUnique(this.props.activeEntity, field)) {
+            this.setState({
+                showError: true,
+                errorMessage: `Field ${field} already exists`
+            });
+
+            return;
+        }
+
+        this.props.addNewField(this.props.activeEntity, field);
 
         this.close(null);
     };
@@ -108,7 +135,8 @@ class FieldModal extends React.Component<FieldModalProps, FieldModalState> {
 const mapStateToProps = (state: DiagramState) => {
     return {
         show: state.shouldShowFieldModal,
-        activeEntity: state.activeEntity
+        activeEntity: state.activeEntity,
+        nodes: state.model.nodeDataArray
     };
 };
 
