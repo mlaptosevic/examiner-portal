@@ -9,7 +9,9 @@ import {
     AddNewFieldEvent,
     addNewTable,
     setActiveEntity,
-    setFieldModal
+    setFieldModal,
+    setWorkMode,
+    WorkMode
 } from './diagramActions';
 
 export interface NodeModel extends BaseNodeModel {
@@ -23,6 +25,7 @@ export interface DiagramState {
     model: DiagramModel<NodeModel, LinkModel>;
     shouldShowFieldModal: boolean;
     activeEntity: string;
+    workMode: WorkMode;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -83,17 +86,26 @@ const setActiveEntityHandler = (state: DiagramState, payload: string) => {
     };
 };
 
+const setWorkModeHandler = (state: DiagramState, payload: WorkMode) => {
+    return {
+        ...state,
+        workMode: payload
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
         linkDataArray: []
     },
     shouldShowFieldModal: false,
-    activeEntity: NO_ACTIVE_ENTITY
+    activeEntity: NO_ACTIVE_ENTITY,
+    workMode: WorkMode.WORKING
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
     .case(addNewEdge, addNewEdgeHandler)
     .case(setFieldModal, setFieldModalHandler)
     .case(setActiveEntity, setActiveEntityHandler)
+    .case(setWorkMode, setWorkModeHandler)
     .build();
