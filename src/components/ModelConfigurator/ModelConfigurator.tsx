@@ -7,6 +7,7 @@ import { DiagramModel, LinkModel } from 'react-gojs';
 import AddObjectSnippet from './AddObjectSnippet';
 import EdgeConnection from './EdgeConnection';
 import FieldModal from './FieldModal';
+import StartQuestioning from './StartQuestioning';
 
 interface ModelConfiguratorProps {
     addNewTable: (entity: string) => void;
@@ -16,7 +17,7 @@ interface ModelConfiguratorProps {
 class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
     render() {
         return (
-            <div>
+            <div style={{ height: '100%' }}>
                 <AddObjectSnippet
                     header="Add new Entity"
                     defaultButtonText="Add Entity"
@@ -25,6 +26,7 @@ class ModelConfigurator extends React.Component<ModelConfiguratorProps> {
                 />
                 <EdgeConnection />
                 <FieldModal />
+                <StartQuestioning />
             </div>
         );
     }

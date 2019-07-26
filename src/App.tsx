@@ -1,11 +1,9 @@
 import React from 'react';
-import Diagram from './components/Diagram/Diagram';
-import ModelConfigurator from './components/ModelConfigurator/ModelConfigurator';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import Assignment from './components/Assignment/Assignment';
+import ExamPage from './pages/ExamPage';
 
 class App extends React.Component {
     render() {
@@ -15,15 +13,7 @@ class App extends React.Component {
                     <Header />
                 </Row>
                 <Row className="main-content">
-                    <Col>
-                        <Assignment />
-                    </Col>
-                    <Col>
-                        <Diagram />
-                    </Col>
-                    <Col>
-                        <ModelConfigurator />
-                    </Col>
+                    <ExamPage />
                 </Row>
                 <Row>
                     <Footer />
