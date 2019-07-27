@@ -30,3 +30,5 @@ export const setFieldModal = actionCreator<boolean>('SET_FIELD_MODAL');
 export const setActiveEntity = actionCreator<string>('SET_ACTIVE_ENTITY');
 export const setWorkMode = actionCreator<WorkMode>('SET_WORK_MODE');
 export const addQuestion = actionCreator<Question>('ADD_QUESTION');
+export const setAssignmentId = actionCreator<number>('SET_ASSIGNMENT_ID');
+export const setExamId = actionCreator<number>('SET_EXAM_ID');

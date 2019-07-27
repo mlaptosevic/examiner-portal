@@ -11,6 +11,8 @@ import {
     addQuestion,
     Question,
     setActiveEntity,
+    setAssignmentId,
+    setExamId,
     setFieldModal,
     setWorkMode,
     WorkMode
@@ -29,6 +31,8 @@ export interface DiagramState {
     activeEntity: string;
     workMode: WorkMode;
     questions: Array<Question>;
+    assignmentId: number;
+    examId: number;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -107,6 +111,20 @@ const addQuestionHandler = (state: DiagramState, payload: Question) => {
     };
 };
 
+const setAssignmentIdHandler = (state: DiagramState, payload: number) => {
+    return {
+        ...state,
+        assignmentId: payload
+    };
+};
+
+const setExamIdHandler = (state: DiagramState, payload: number) => {
+    return {
+        ...state,
+        examId: payload
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
@@ -115,7 +133,10 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     shouldShowFieldModal: false,
     activeEntity: NO_ACTIVE_ENTITY,
     workMode: WorkMode.WORKING,
-    questions: []
+    questions: [],
+    // TODO: change later
+    assignmentId: 2,
+    examId: 0
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -124,4 +145,6 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(setActiveEntity, setActiveEntityHandler)
     .case(setWorkMode, setWorkModeHandler)
     .case(addQuestion, addQuestionHandler)
+    .case(setAssignmentId, setAssignmentIdHandler)
+    .case(setExamId, setExamIdHandler)
     .build();
