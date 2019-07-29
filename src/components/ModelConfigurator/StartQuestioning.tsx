@@ -1,11 +1,14 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { setWorkMode, WorkMode } from '../../reducers/diagramActions';
+import { QuestioningState, setExamId, setQuestioningState, setWorkMode, WorkMode } from '../../reducers/diagramActions';
 import { Button, Modal } from 'react-bootstrap';
+import axios from 'axios';
 
 interface StartQuestioningProps {
     setWorkMode: (WorkMode) => void;
+    setExamId: (number) => void;
+    setQuestioningState: (QuestioningState) => void;
 }
 
 interface StartQuestioningState {
@@ -46,6 +49,7 @@ class StartQuestioning extends React.Component<StartQuestioningProps, StartQuest
                             onClick={() => {
                                 this.setState({ shouldShowModal: false });
                                 this.props.setWorkMode(WorkMode.QUESTIONING);
+                                this.startQuestioning();
                             }}
                         >
                             Yes
@@ -58,12 +62,30 @@ class StartQuestioning extends React.Component<StartQuestioningProps, StartQuest
             </div>
         );
     }
+
+    private startQuestioning = async () => {
+        const response = await axios.post('http://localhost:8080/v1/exam/new/student/1/assignment/1');
+
+        if (response.status !== 200) {
+            console.error("Can't create new exam");
+            return;
+        }
+
+        this.props.setExamId(response.data);
+        this.props.setQuestioningState(QuestioningState.GET_QUESTION);
+    };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         setWorkMode: (workMode: WorkMode) => {
             dispatch(setWorkMode(workMode));
+        },
+        setExamId: (examId: number) => {
+            dispatch(setExamId(examId));
+        },
+        setQuestioningState: (questioningState: QuestioningState) => {
+            dispatch(setQuestioningState(questioningState));
         }
     };
 };

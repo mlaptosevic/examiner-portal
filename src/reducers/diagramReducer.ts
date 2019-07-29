@@ -10,10 +10,13 @@ import {
     addNewTable,
     addQuestion,
     Question,
+    QuestioningState,
     setActiveEntity,
     setAssignmentId,
     setExamId,
     setFieldModal,
+    setQuestionId,
+    setQuestioningState,
     setWorkMode,
     WorkMode
 } from './diagramActions';
@@ -24,6 +27,8 @@ export interface NodeModel extends BaseNodeModel {
 }
 
 export const NO_ACTIVE_ENTITY = '';
+export const NO_EXAM = -1;
+export const NO_QUESTION = -1;
 
 export interface DiagramState {
     model: DiagramModel<NodeModel, LinkModel>;
@@ -33,6 +38,8 @@ export interface DiagramState {
     questions: Array<Question>;
     assignmentId: number;
     examId: number;
+    questionId: number;
+    questioningState: QuestioningState;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -118,10 +125,24 @@ const setAssignmentIdHandler = (state: DiagramState, payload: number) => {
     };
 };
 
+const setQuestionIdHandler = (state: DiagramState, payload: number) => {
+    return {
+        ...state,
+        questionId: payload
+    };
+};
+
 const setExamIdHandler = (state: DiagramState, payload: number) => {
     return {
         ...state,
         examId: payload
+    };
+};
+
+const setQuestioningStateHandler = (state: DiagramState, payload: QuestioningState) => {
+    return {
+        ...state,
+        questioningState: payload
     };
 };
 
@@ -136,7 +157,9 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     questions: [],
     // TODO: change later
     assignmentId: 2,
-    examId: 0
+    examId: NO_EXAM,
+    questioningState: QuestioningState.WAIT,
+    questionId: NO_QUESTION
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -147,4 +170,6 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(addQuestion, addQuestionHandler)
     .case(setAssignmentId, setAssignmentIdHandler)
     .case(setExamId, setExamIdHandler)
+    .case(setQuestioningState, setQuestioningStateHandler)
+    .case(setQuestionId, setQuestionIdHandler)
     .build();

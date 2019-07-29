@@ -61,7 +61,7 @@ class MyDiagram extends React.PureComponent<MyDiagramProps> {
                 selectionChanged: node => this.props.onNodeSelection(node.key as string, node.isSelected)
             },
             $(go.Shape, 'RoundedRectangle', { strokeWidth: 0 }, new go.Binding('fill', 'color')),
-            $(go.TextBlock, { margin: 8, editable: true }, new go.Binding('text', 'label'))
+            $(go.TextBlock, { margin: 8, editable: true }, new go.Binding('textOfQuestion', 'label'))
         );
 
         return myDiagram;
@@ -74,7 +74,7 @@ class MyDiagram extends React.PureComponent<MyDiagramProps> {
         }
         const node = tb.part;
         if (node instanceof go.Node && this.props.onTextChange) {
-            this.props.onTextChange({ key: node.key as string, text: tb.text });
+            this.props.onTextChange({ key: node.key as string, text: tb.textOfQuestion });
         }
     }
 }

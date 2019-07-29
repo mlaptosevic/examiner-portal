@@ -20,7 +20,12 @@ export enum WorkMode {
 
 export interface Question {
     id: number;
-    text: string;
+    textOfQuestion: string;
+}
+
+export enum QuestioningState {
+    WAIT,
+    GET_QUESTION
 }
 
 export const addNewTable = actionCreator<string>('ADD_NEW_TABLE');
@@ -32,3 +37,5 @@ export const setWorkMode = actionCreator<WorkMode>('SET_WORK_MODE');
 export const addQuestion = actionCreator<Question>('ADD_QUESTION');
 export const setAssignmentId = actionCreator<number>('SET_ASSIGNMENT_ID');
 export const setExamId = actionCreator<number>('SET_EXAM_ID');
+export const setQuestionId = actionCreator<number>('SET_QUESTION_ID');
+export const setQuestioningState = actionCreator<QuestioningState>('SET_QUESTIONING_STATUS');
