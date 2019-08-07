@@ -18,7 +18,7 @@ export const createNodeTemplates = (setActiveEntity, setFieldModal) => {
             $(
                 go.TextBlock,
                 { margin: 5, width: 80, textAlign: 'center', font: '15px sans-serif' },
-                new go.Binding('textOfQuestion', 'entity')
+                new go.Binding('text', 'entity')
             ),
             // $(go.Shape, "MinusLine", { width: 80, margin: 4, fill: null }),
             $(go.Shape, { geometryString: 'M0 0 H80', fill: 'lightgreen', margin: 5 }),
@@ -33,7 +33,7 @@ export const createNodeTemplates = (setActiveEntity, setFieldModal) => {
                         go.Panel,
                         'Auto',
                         { margin: 2 },
-                        $(go.TextBlock, new go.Binding('textOfQuestion', ''), { width: 80, margin: 2 })
+                        $(go.TextBlock, new go.Binding('text', ''), { width: 80, margin: 2 })
                     )
                 }
             ),
