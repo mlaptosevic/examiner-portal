@@ -15,20 +15,6 @@ interface ExamPageProps {
 
 class ExamPage extends React.Component<ExamPageProps> {
     render() {
-        // let pageBody = null;
-        //
-        // switch (this.props.workMode) {
-        //     case WorkMode.WORKING:
-        //         pageBody = ModelConfigurator;
-        //         break;
-        //         case WorkMode.QUESTIONING:
-        //             pageBody = ModelConfigurator;
-        //             break;
-        //     case WorkMode.FINISHED:
-        //         pageBody = ModelConfigurator;
-        //         break;
-        // }
-
         return (
             <Container fluid={true}>
                 <Row className="main-content">

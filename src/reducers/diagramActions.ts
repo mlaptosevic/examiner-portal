@@ -28,6 +28,12 @@ export enum QuestioningState {
     GET_QUESTION
 }
 
+export interface Assignment {
+    id: number;
+    assignmentText: string;
+    title: string;
+}
+
 export const addNewTable = actionCreator<string>('ADD_NEW_TABLE');
 export const addNewField = actionCreator<AddNewFieldEvent>('ADD_NEW_FIELD');
 export const addNewEdge = actionCreator<AddNewEdgeEvent>('ADD_NEW_EDGE');
@@ -39,3 +45,4 @@ export const setAssignmentId = actionCreator<number>('SET_ASSIGNMENT_ID');
 export const setExamId = actionCreator<number>('SET_EXAM_ID');
 export const setQuestionId = actionCreator<number>('SET_QUESTION_ID');
 export const setQuestioningState = actionCreator<QuestioningState>('SET_QUESTIONING_STATUS');
+export const setAssignment = actionCreator<Assignment>('SET_ASSIGNMENT');

@@ -11,6 +11,7 @@ import { DiagramState } from '../../reducers/diagramReducer';
 import { connect } from 'react-redux';
 import { Button, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
+import { BACKEND_URL } from '../../utils/url';
 
 interface QuestionPanelProps {
     addQuestion: (Question) => void;
@@ -35,7 +36,7 @@ class QuestionPanel extends React.Component<QuestionPanelProps> {
         if (this.props.questioningState === QuestioningState.GET_QUESTION) {
             this.props.setQuestioningState(QuestioningState.WAIT);
 
-            const response = await axios.get(`http://localhost:8080/v1/exam/${this.props.examId}/question`);
+            const response = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/question`);
 
             if (response.status !== 200) {
                 console.error("Can't load question");
@@ -56,7 +57,7 @@ class QuestionPanel extends React.Component<QuestionPanelProps> {
         ) {
             this.props.setQuestioningState(QuestioningState.WAIT);
 
-            const response = await axios.get(`http://localhost:8080/v1/exam/${this.props.examId}/question`);
+            const response = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/question`);
 
             if (response.status !== 200) {
                 console.error("Can't load question");
@@ -81,7 +82,7 @@ class QuestionPanel extends React.Component<QuestionPanelProps> {
                 <Button
                     onClick={async () => {
                         await axios.post(
-                            `http://localhost:8080/v1/exam/${this.props.examId}/question/${this.props.questionId}`
+                            `${BACKEND_URL}/v1/exam/${this.props.examId}/question/${this.props.questionId}`
                         );
                         this.props.setQuestioningState(QuestioningState.GET_QUESTION);
                     }}

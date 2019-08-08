@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { QuestioningState, setExamId, setQuestioningState, setWorkMode, WorkMode } from '../../reducers/diagramActions';
 import { Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import { BACKEND_URL } from '../../utils/url';
 
 interface StartQuestioningProps {
     setWorkMode: (WorkMode) => void;
@@ -64,7 +65,7 @@ class StartQuestioning extends React.Component<StartQuestioningProps, StartQuest
     }
 
     private startQuestioning = async () => {
-        const response = await axios.post('http://localhost:8080/v1/exam/new/student/1/assignment/1');
+        const response = await axios.post(`${BACKEND_URL}/v1/exam/new/student/1/assignment/1`);
 
         if (response.status !== 200) {
             console.error("Can't create new exam");

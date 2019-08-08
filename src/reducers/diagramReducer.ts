@@ -9,9 +9,11 @@ import {
     AddNewFieldEvent,
     addNewTable,
     addQuestion,
+    Assignment,
     Question,
     QuestioningState,
     setActiveEntity,
+    setAssignment,
     setAssignmentId,
     setExamId,
     setFieldModal,
@@ -40,6 +42,7 @@ export interface DiagramState {
     examId: number;
     questionId: number;
     questioningState: QuestioningState;
+    assignment: Assignment;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -146,6 +149,13 @@ const setQuestioningStateHandler = (state: DiagramState, payload: QuestioningSta
     };
 };
 
+const setAssignmentHandler = (state: DiagramState, payload: Assignment) => {
+    return {
+        ...state,
+        assignment: payload
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
@@ -159,7 +169,8 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     assignmentId: 2,
     examId: NO_EXAM,
     questioningState: QuestioningState.WAIT,
-    questionId: NO_QUESTION
+    questionId: NO_QUESTION,
+    assignment: {} as Assignment
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -172,4 +183,5 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(setExamId, setExamIdHandler)
     .case(setQuestioningState, setQuestioningStateHandler)
     .case(setQuestionId, setQuestionIdHandler)
+    .case(setAssignment, setAssignmentHandler)
     .build();
