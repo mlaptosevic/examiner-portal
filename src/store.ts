@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, Middleware } from 'redux';
+import { createStore, applyMiddleware, Middleware, compose } from 'redux';
 
 export const create = mainReducer => {
     const middlewares: Array<Middleware> = [];
@@ -8,6 +8,8 @@ export const create = mainReducer => {
         middlewares.push(logger);
     }
 
-    const store = createStore(mainReducer, applyMiddleware(...middlewares));
+    // @ts-ignore
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    const store = createStore(mainReducer, composeEnhancers(applyMiddleware(...middlewares)));
     return store;
 };
