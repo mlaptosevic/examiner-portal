@@ -6,7 +6,7 @@ import {
     addNewEdge,
     AddNewEdgeEvent,
     addNewField,
-    AddNewFieldEvent,
+    FieldUpdateEvent,
     addNewTable,
     addQuestion,
     Assignment,
@@ -20,7 +20,8 @@ import {
     setQuestionId,
     setQuestioningState,
     setWorkMode,
-    WorkMode
+    WorkMode,
+    setFieldUpdateToNone
 } from './diagramActions';
 
 export interface NodeModel extends BaseNodeModel {
@@ -31,6 +32,7 @@ export interface NodeModel extends BaseNodeModel {
 export const NO_ACTIVE_ENTITY = '';
 export const NO_EXAM = -1;
 export const NO_QUESTION = -1;
+export const NO_FIELD_UPDATE_EVENT = {} as FieldUpdateEvent;
 
 export interface DiagramState {
     model: DiagramModel<NodeModel, LinkModel>;
@@ -43,6 +45,7 @@ export interface DiagramState {
     questionId: number;
     questioningState: QuestioningState;
     assignment: Assignment;
+    fieldUpdate: FieldUpdateEvent;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -58,8 +61,8 @@ const addNewTableHandler = (state: DiagramState, payload: string): DiagramState 
     };
 };
 
-const addNewFieldHandler = (state: DiagramState, payload: AddNewFieldEvent) => {
-    const newNodes = _.cloneDeep(state.model.nodeDataArray);
+const addNewFieldHandler = (state: DiagramState, payload: FieldUpdateEvent) => {
+    const newNodes = Array.from(state.model.nodeDataArray);
     newNodes.forEach(entity => {
         if (entity.entity === payload.entity) {
             entity.fields.push(payload.field);
@@ -68,10 +71,18 @@ const addNewFieldHandler = (state: DiagramState, payload: AddNewFieldEvent) => {
 
     return {
         ...state,
+        fieldUpdate: payload,
         model: {
             ...state.model,
             nodeDataArray: newNodes
         }
+    };
+};
+
+const setFieldUpdateToNoneHandler = (state: DiagramState) => {
+    return {
+        ...state,
+        fieldUpdate: NO_FIELD_UPDATE_EVENT
     };
 };
 
@@ -170,7 +181,8 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     examId: NO_EXAM,
     questioningState: QuestioningState.WAIT,
     questionId: NO_QUESTION,
-    assignment: {} as Assignment
+    assignment: {} as Assignment,
+    fieldUpdate: NO_FIELD_UPDATE_EVENT
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -184,4 +196,5 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(setQuestioningState, setQuestioningStateHandler)
     .case(setQuestionId, setQuestionIdHandler)
     .case(setAssignment, setAssignmentHandler)
+    .case(setFieldUpdateToNone, setFieldUpdateToNoneHandler)
     .build();

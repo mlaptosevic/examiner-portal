@@ -2,7 +2,7 @@ import { actionCreatorFactory } from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory('DIAGRAM');
 
-export interface AddNewFieldEvent {
+export interface FieldUpdateEvent {
     entity: string;
     field: string;
 }
@@ -35,7 +35,7 @@ export interface Assignment {
 }
 
 export const addNewTable = actionCreator<string>('ADD_NEW_TABLE');
-export const addNewField = actionCreator<AddNewFieldEvent>('ADD_NEW_FIELD');
+export const addNewField = actionCreator<FieldUpdateEvent>('ADD_NEW_FIELD');
 export const addNewEdge = actionCreator<AddNewEdgeEvent>('ADD_NEW_EDGE');
 export const setFieldModal = actionCreator<boolean>('SET_FIELD_MODAL');
 export const setActiveEntity = actionCreator<string>('SET_ACTIVE_ENTITY');
@@ -46,3 +46,4 @@ export const setExamId = actionCreator<number>('SET_EXAM_ID');
 export const setQuestionId = actionCreator<number>('SET_QUESTION_ID');
 export const setQuestioningState = actionCreator<QuestioningState>('SET_QUESTIONING_STATUS');
 export const setAssignment = actionCreator<Assignment>('SET_ASSIGNMENT');
+export const setFieldUpdateToNone = actionCreator<void>('SET_FIELD_UPDATE_TO_NONE');

@@ -81,7 +81,9 @@ class FieldModal extends React.Component<FieldModalProps, FieldModalState> {
         }
 
         this.props.addNewField(this.props.activeEntity, field);
-
+        this.setState({
+            showError: false
+        });
         this.close(null);
     };
 
