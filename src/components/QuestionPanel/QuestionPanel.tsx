@@ -5,7 +5,9 @@ import {
     Question,
     QuestioningState,
     setQuestionId,
-    setQuestioningState
+    setQuestioningState,
+    setWorkMode,
+    WorkMode
 } from '../../reducers/diagramActions';
 import { DiagramState } from '../../reducers/diagramReducer';
 import { connect } from 'react-redux';
@@ -23,6 +25,7 @@ interface QuestionPanelProps {
     questionId: number;
     examId: number;
     diagram: Diagram;
+    setWorkMode: (WorkMode) => void;
 }
 
 interface QuestionPanelState {
@@ -33,15 +36,6 @@ interface QuestionPanelState {
 const FINISHED = 'FINISHED';
 
 class QuestionPanel extends React.Component<QuestionPanelProps, QuestionPanelState> {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            questioningState: QuestioningState.WAIT,
-            isQuestioningFinished: false
-        };
-    }
-
     async componentDidMount() {
         if (this.props.questioningState === QuestioningState.GET_QUESTION) {
             this.props.setQuestioningState(QuestioningState.WAIT);
@@ -77,7 +71,7 @@ class QuestionPanel extends React.Component<QuestionPanelProps, QuestionPanelSta
             const examStatus = response1.data;
 
             if (examStatus === FINISHED) {
-                this.setState({ isQuestioningFinished: true });
+                this.props.setWorkMode(WorkMode.FINISHED);
             }
 
             const response2 = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/question`);
@@ -99,13 +93,10 @@ class QuestionPanel extends React.Component<QuestionPanelProps, QuestionPanelSta
             </ListGroup.Item>
         ));
 
-        const resultPanelNotification = this.state.isQuestioningFinished ? <div>Questioning is finished</div> : null;
-
         return (
             <div className="question-panel">
                 <div className="title">Questions:</div>
                 <ListGroup>{questionsItems}</ListGroup>
-                {resultPanelNotification}
             </div>
         );
     }
@@ -121,6 +112,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         },
         setQuestionId: (questionId: number) => {
             dispatch(setQuestionId(questionId));
+        },
+        setWorkMode: (workMode: WorkMode) => {
+            dispatch(setWorkMode(workMode));
         }
     };
 };
