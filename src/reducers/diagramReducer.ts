@@ -21,8 +21,10 @@ import {
     setQuestioningState,
     setWorkMode,
     WorkMode,
-    setFieldUpdateToNone
+    setFieldUpdateToNone,
+    setDiagram
 } from './diagramActions';
+import { Diagram } from 'gojs';
 
 export interface NodeModel extends BaseNodeModel {
     entity: string;
@@ -46,6 +48,7 @@ export interface DiagramState {
     questioningState: QuestioningState;
     assignment: Assignment;
     fieldUpdate: FieldUpdateEvent;
+    diagram: Diagram;
 }
 
 const addNewTableHandler = (state: DiagramState, payload: string): DiagramState => {
@@ -167,6 +170,13 @@ const setAssignmentHandler = (state: DiagramState, payload: Assignment) => {
     };
 };
 
+const setDiagramHandler = (state: DiagramState, payload: Diagram) => {
+    return {
+        ...state,
+        diagram: payload
+    };
+};
+
 export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<DiagramState>({
     model: {
         nodeDataArray: [],
@@ -182,7 +192,8 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     questioningState: QuestioningState.WAIT,
     questionId: NO_QUESTION,
     assignment: {} as Assignment,
-    fieldUpdate: NO_FIELD_UPDATE_EVENT
+    fieldUpdate: NO_FIELD_UPDATE_EVENT,
+    diagram: {} as Diagram
 })
     .case(addNewTable, addNewTableHandler)
     .case(addNewField, addNewFieldHandler)
@@ -197,4 +208,5 @@ export const diagramReducer: Reducer<DiagramState> = reducerWithInitialState<Dia
     .case(setQuestionId, setQuestionIdHandler)
     .case(setAssignment, setAssignmentHandler)
     .case(setFieldUpdateToNone, setFieldUpdateToNoneHandler)
+    .case(setDiagram, setDiagramHandler)
     .build();

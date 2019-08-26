@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import go, { Diagram as DiagramGojs, GraphLinksModel } from 'gojs';
 import './Diagram.css';
-import { DiagramState } from '../../reducers/diagramReducer';
+import { DiagramState, NO_FIELD_UPDATE_EVENT, NodeModel } from '../../reducers/diagramReducer';
 import { DiagramModel, LinkModel } from 'react-gojs';
-import { NO_FIELD_UPDATE_EVENT, NodeModel } from '../../reducers/diagramReducer';
 import {
     addNewField,
     FieldUpdateEvent,
     setActiveEntity,
+    setDiagram,
     setFieldModal,
     setFieldUpdateToNone
 } from '../../reducers/diagramActions';
@@ -22,6 +22,9 @@ interface DiagramProps {
     setActiveEntity: (entity: string) => void;
     setFieldUpdateToNone: () => void;
     fieldUpdate: FieldUpdateEvent;
+    setDiagram: (diagram: DiagramGojs) => void;
+    examId: number;
+    questionId: number;
 }
 
 class Diagram extends React.Component<DiagramProps> {
@@ -36,7 +39,11 @@ class Diagram extends React.Component<DiagramProps> {
     createModel = () => {
         const $ = go.GraphObject.make;
 
-        return $(go.GraphLinksModel);
+        const model = $(go.GraphLinksModel);
+        model.set(model.modelData, 'examId', -1);
+        model.set(model.modelData, 'questionId', -1);
+
+        return model;
     };
 
     createDiagram = () => {
@@ -54,9 +61,9 @@ class Diagram extends React.Component<DiagramProps> {
 
         this.diagram.linkTemplate = createLinkTemplates();
 
-        const model = this.createModel();
+        this.diagram.model = this.createModel();
 
-        this.diagram.model = model;
+        this.props.setDiagram(this.diagram);
     }
 
     componentDidUpdate(prevProps: Readonly<DiagramProps>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -80,13 +87,19 @@ class Diagram extends React.Component<DiagramProps> {
             // From diagram
             const entity = this.diagram.model.findNodeDataForKey(this.props.fieldUpdate.entity);
 
-            console.log(node.fields);
-
             if (entity && node) {
                 this.diagram.model.addArrayItem(entity.fields, this.props.fieldUpdate.field);
             }
 
             this.props.setFieldUpdateToNone();
+        }
+
+        if (this.props.examId !== this.diagram.model.modelData.examId) {
+            this.diagram.model.set(this.diagram.model.modelData, 'examId', this.props.examId);
+        }
+
+        if (this.props.questionId !== this.diagram.model.modelData.questionId) {
+            this.diagram.model.set(this.diagram.model.modelData, 'questionId', this.props.questionId);
         }
     }
 
@@ -98,7 +111,9 @@ class Diagram extends React.Component<DiagramProps> {
 const mapStateToProps = (state: DiagramState) => {
     return {
         model: state.model,
-        fieldUpdate: state.fieldUpdate
+        fieldUpdate: state.fieldUpdate,
+        examId: state.examId,
+        questionId: state.questionId
     };
 };
 
@@ -118,6 +133,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
         setFieldUpdateToNone: () => {
             dispatch(setFieldUpdateToNone());
+        },
+
+        setDiagram: (diagram: DiagramGojs) => {
+            dispatch(setDiagram(diagram));
         }
     };
 };

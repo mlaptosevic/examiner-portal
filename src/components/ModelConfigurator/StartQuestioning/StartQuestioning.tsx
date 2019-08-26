@@ -1,15 +1,27 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { QuestioningState, setExamId, setQuestioningState, setWorkMode, WorkMode } from '../../reducers/diagramActions';
+import {
+    QuestioningState,
+    setExamId,
+    setQuestioningState,
+    setWorkMode,
+    WorkMode
+} from '../../../reducers/diagramActions';
 import { Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import { BACKEND_URL } from '../../utils/url';
+import { BACKEND_URL } from '../../../utils/url';
+import { DiagramState } from '../../../reducers/diagramReducer';
+import { Diagram } from 'gojs';
+import { convertGraphObjectToERModelElement, Node, Link } from './QuestioningService';
 
 interface StartQuestioningProps {
     setWorkMode: (WorkMode) => void;
     setExamId: (number) => void;
     setQuestioningState: (QuestioningState) => void;
+    diagram: Diagram;
+    examId: number;
+    questionId: number;
 }
 
 interface StartQuestioningState {
@@ -49,6 +61,10 @@ class StartQuestioning extends React.Component<StartQuestioningProps, StartQuest
                             variant="success"
                             onClick={() => {
                                 this.setState({ shouldShowModal: false });
+                                this.props.diagram.isReadOnly = true;
+                                this.props.diagram.addDiagramListener('ObjectSingleClicked', e => {
+                                    this.answerQuestion(e.subject.part.data, e.diagram.model.modelData);
+                                });
                                 this.props.setWorkMode(WorkMode.QUESTIONING);
                                 this.startQuestioning();
                             }}
@@ -75,7 +91,29 @@ class StartQuestioning extends React.Component<StartQuestioningProps, StartQuest
         this.props.setExamId(response.data);
         this.props.setQuestioningState(QuestioningState.GET_QUESTION);
     };
+
+    private answerQuestion = async (data: Node & Link, modelData) => {
+        const element = convertGraphObjectToERModelElement(data);
+        const response = await axios.post(
+            `${BACKEND_URL}/v1/exam/${modelData.examId}/question/${modelData.questionId}`,
+            element
+        );
+
+        if (response.status !== 200) {
+            console.error(`Cannot properly send answer for question: ${this.props.questionId}`);
+        }
+
+        this.props.setQuestioningState(QuestioningState.GET_QUESTION);
+    };
 }
+
+const mapStateToProps = (state: DiagramState) => {
+    return {
+        diagram: state.diagram,
+        examId: state.examId,
+        questionId: state.questionId
+    };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
@@ -92,6 +130,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(
-    () => {},
+    mapStateToProps,
     mapDispatchToProps
 )(StartQuestioning);

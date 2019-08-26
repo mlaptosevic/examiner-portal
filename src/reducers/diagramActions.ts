@@ -1,4 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
+import { Diagram } from 'gojs';
 
 const actionCreator = actionCreatorFactory('DIAGRAM');
 
@@ -47,3 +48,4 @@ export const setQuestionId = actionCreator<number>('SET_QUESTION_ID');
 export const setQuestioningState = actionCreator<QuestioningState>('SET_QUESTIONING_STATUS');
 export const setAssignment = actionCreator<Assignment>('SET_ASSIGNMENT');
 export const setFieldUpdateToNone = actionCreator<void>('SET_FIELD_UPDATE_TO_NONE');
+export const setDiagram = actionCreator<Diagram>('SET_DIAGRAM');

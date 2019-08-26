@@ -9,9 +9,10 @@ import {
 } from '../../reducers/diagramActions';
 import { DiagramState } from '../../reducers/diagramReducer';
 import { connect } from 'react-redux';
-import { Button, ListGroup } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { BACKEND_URL } from '../../utils/url';
+import { Diagram } from 'gojs';
 
 interface QuestionPanelProps {
     addQuestion: (Question) => void;
@@ -21,14 +22,23 @@ interface QuestionPanelProps {
     setQuestionId: (number) => void;
     questionId: number;
     examId: number;
+    diagram: Diagram;
 }
 
-class QuestionPanel extends React.Component<QuestionPanelProps> {
+interface QuestionPanelState {
+    questioningState: QuestioningState;
+    isQuestioningFinished: boolean;
+}
+
+const FINISHED = 'FINISHED';
+
+class QuestionPanel extends React.Component<QuestionPanelProps, QuestionPanelState> {
     constructor(props) {
         super(props);
 
         this.state = {
-            questioningState: QuestioningState.WAIT
+            questioningState: QuestioningState.WAIT,
+            isQuestioningFinished: false
         };
     }
 
@@ -50,21 +60,35 @@ class QuestionPanel extends React.Component<QuestionPanelProps> {
     }
 
     async componentDidUpdate(prevProps: Readonly<QuestionPanelProps>, prevState: Readonly<{}>) {
-        console.log('activeated', prevProps.questioningState, this.props.questioningState);
+        console.log('activated', prevProps.questioningState, this.props.questioningState);
         if (
             prevProps.questioningState !== this.props.questioningState &&
             this.props.questioningState === QuestioningState.GET_QUESTION
         ) {
             this.props.setQuestioningState(QuestioningState.WAIT);
 
-            const response = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/question`);
+            const response1 = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/status`);
 
-            if (response.status !== 200) {
+            if (response1.status !== 200) {
+                console.log(`Can't load exam status`);
+                return;
+            }
+
+            const examStatus = response1.data;
+
+            if (examStatus === FINISHED) {
+                this.setState({ isQuestioningFinished: true });
+            }
+
+            const response2 = await axios.get(`${BACKEND_URL}/v1/exam/${this.props.examId}/question`);
+
+            if (response2.status !== 200) {
                 console.error("Can't load question");
                 return;
             }
-            this.props.setQuestionId(response.data.id);
-            this.props.addQuestion(response.data);
+            this.props.setQuestionId(response2.data.id);
+            this.props.addQuestion(response2.data);
+            this.props.diagram.model.modelData.questionId = response2.data.id;
         }
     }
 
@@ -75,20 +99,13 @@ class QuestionPanel extends React.Component<QuestionPanelProps> {
             </ListGroup.Item>
         ));
 
+        const resultPanelNotification = this.state.isQuestioningFinished ? <div>Questioning is finished</div> : null;
+
         return (
             <div className="question-panel">
                 <div className="title">Questions:</div>
                 <ListGroup>{questionsItems}</ListGroup>
-                <Button
-                    onClick={async () => {
-                        await axios.post(
-                            `${BACKEND_URL}/v1/exam/${this.props.examId}/question/${this.props.questionId}`
-                        );
-                        this.props.setQuestioningState(QuestioningState.GET_QUESTION);
-                    }}
-                >
-                    Answer Question
-                </Button>
+                {resultPanelNotification}
             </div>
         );
     }
@@ -113,7 +130,8 @@ const mapStoreToProps = (store: DiagramState) => {
         questions: store.questions,
         questioningState: store.questioningState,
         questionId: store.questionId,
-        examId: store.examId
+        examId: store.examId,
+        diagram: store.diagram
     };
 };
 

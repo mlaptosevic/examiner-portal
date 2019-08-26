@@ -7,7 +7,7 @@ import { DiagramModel, LinkModel } from 'react-gojs';
 import AddObjectSnippet from './AddObjectSnippet';
 import EdgeConnection from './EdgeConnection';
 import FieldModal from './FieldModal';
-import StartQuestioning from './StartQuestioning';
+import StartQuestioning from './StartQuestioning/StartQuestioning';
 
 interface ModelConfiguratorProps {
     addNewTable: (entity: string) => void;
